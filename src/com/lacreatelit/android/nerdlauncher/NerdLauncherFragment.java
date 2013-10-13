@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 public class NerdLauncherFragment extends ListFragment {
@@ -71,6 +73,27 @@ public class NerdLauncherFragment extends ListFragment {
 		
 		// Set the ArrayAdapter as the data source for the ListView
 		setListAdapter(arrayAdapter);
+	}
+
+	@Override
+	public void onListItemClick(ListView listView, View view, int position, long id) {
+		
+		ResolveInfo resolveInfo = (ResolveInfo)listView.getAdapter()
+				.getItem(position);
+		ActivityInfo activityInfo = resolveInfo.activityInfo;
+		
+		if(activityInfo == null) {
+			Log.d(TAG, "Cannot resolve activity");
+			return;
+		}
+		
+		Intent intent = new Intent(Intent.ACTION_MAIN);
+		intent.setClassName(activityInfo.applicationInfo.packageName, 
+				activityInfo.name);
+		
+		startActivity(intent);
+		
+		
 	}
 	
 	
